@@ -8,17 +8,17 @@ grant connect on database dvdrental to rentaluser;
 grant select on table customer to rentaluser;
 
 --Create a new user group called "rental" and add "rentaluser" to the group. 
-CREATE ROLE rental;
-GRANT rental TO rentaluser;
+create role rental;
+grant rental to rentaluser;
 
 --Grant the "rental" group INSERT and UPDATE permissions for the "rental" table. 
 --Insert a new row and update one existing row in the "rental" table under that role. 
 -- Grant SELECT, INSERT, and UPDATE permissions on the "rental" table to the "rental" group
-GRANT SELECT, INSERT, UPDATE ON TABLE rental TO rental;
+grant select, insert, update on table rental to rental;
 
 --Revoke the "rental" group's INSERT permission for the "rental" table. 
 --Try to insert new rows into the "rental" table make sure this action is denied.
-REVOKE INSERT ON TABLE rental FROM rental;
+revoke insert on table rental from rental;
 
 
 --Create a personalized role for any customer already existing in the dvd_rental database. The name of the role 
@@ -26,30 +26,30 @@ REVOKE INSERT ON TABLE rental FROM rental;
 -- must not be empty. Configure that role so that the customer can only access their own data
 -- in the "rental" and "payment" tables. Write a query to make sure this user sees only their own data.
 
-CREATE ROLE client_barbara_jones;
-ALTER TABLE rental ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payment ENABLE ROW LEVEL SECURITY;
+create role client_barbara_jones;
+alter table rental enable row level security;
+alter table payment enable row level security;
 
 --for rental table
-CREATE POLICY rental_client_barbara_jones_policy
-ON rental
-FOR SELECT
-USING (customer_id = 4);
+create policy rental_client_barbara_jones_policy
+on rental
+for select
+using (customer_id = 4);
 
-GRANT SELECT ON TABLE rental TO client_barbara_jones;
+grant select on table rental to client_barbara_jones;
 
-ALTER POLICY rental_client_barbara_jones_policy
-ON rental
-TO client_barbara_jones;
+alter policy rental_client_barbara_jones_policy
+on rental
+to client_barbara_jones;
 
 --for payment table
-CREATE POLICY payment_client_barbara_jones_policy
-ON payment
-FOR SELECT
-USING (customer_id = 4);
+create policy payment_client_barbara_jones_policy
+on payment
+for select 
+using (customer_id = 4);
 
-GRANT SELECT ON TABLE payment TO client_barbara_jones;
+grant select on table payment to client_barbara_jones;
 
-ALTER POLICY payment_client_barbara_jones_policy
-ON payment
-TO client_barbara_jones;
+alter policy payment_client_barbara_jones_policy
+on payment
+to client_barbara_jones;
